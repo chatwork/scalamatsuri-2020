@@ -3,15 +3,21 @@ object Main extends App {
   val sc = new java.util.Scanner(System.in)
 
   val n, m = sc.nextInt
+  val aced = Array.ofDim[Boolean](n + 1)
+  val penalty = Array.ofDim[Int](n + 1)
 
-  val ps = (1 to m).foldLeft(Map.empty[Int, Vector[String]]) { case (acc, _) =>
+  (1 to m).foreach { _ =>
     val p = sc.nextInt
     val s = sc.next
-    acc.updated(p, acc.getOrElse(p, Vector.empty[String]) ++ Vector(s))
+    if (s == "AC") aced(p) = true
+    else if (!aced(p)) penalty(p) = penalty(p) + 1
+  }
+  val (ac, wa) = aced.zip(penalty).foldRight((0, 0)) {
+    case ((aced, penalty), (accAc, accPen)) =>
+      if (aced) (accAc + 1, accPen + penalty)
+      else (accAc, accPen)
   }
 
-  def solve = ???
-
-  pw.println(solve)
+  pw.println(s"$ac $wa")
   pw.flush()
 }
